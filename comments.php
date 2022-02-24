@@ -31,18 +31,12 @@ try
 
 
 <?php
-// $title = isset($_GET['title']);
-// $id = isset($_GET['id']);
+
 
 // retrieve ticket
 $retrieveTicket = $db->prepare('SELECT id, title, content, DATE_FORMAT(created_date, \'%d/%m/%Y à %Hh%imin%ss\') AS created_date FROM tickets WHERE id = ?');
 $retrieveTicket->execute(array($_GET['ticket']));
 $ticket = $retrieveTicket->fetch();
-// $retrieveTicket->execute ([
-//   ':id' => $id,
-//   ':title' => $title
-// ]);
-// $ticket = $retrieveTicket->fetchAll();
 
 ?>
 
@@ -55,19 +49,51 @@ $ticket = $retrieveTicket->fetch();
 </p>
 </div>
 
+<!-- retrieve Comment -->
+<h2>Commentaires:</h2>
 <?php
+
+if (isset($_GET['author']) AND isset($_GET['description']))
+{
+echo 'Bonjour ' . $_GET['author'];
+}
+else // Il manque des paramètres, on avertit le visiteur
+{
+echo 'Il faut renseigner un auteur et une description !';
+}
+
+
+
+// $author = $_GET['author'];
+// $description = $_GET['description'];
+
 $retrieveComment = $db->prepare('SELECT id, ticket_id, author, description, DATE_FORMAT(posted_date, \'%d/%m/%Y\ à %Hh%imin%ss\') AS posted_date FROM comments WHERE ticket_id = ? ORDER BY posted_date');
 $retrieveComment->execute(array($_GET['ticket']));
-while ($comment = $retrieveComment->fetch())
+
+while ($comments = $retrieveComment->fetchAll())
 {
 ?>
-<p><?php echo htmlspecialchars($comment['author']);?> le <?php echo htmlspecialchars($comment['posted_date']);?>: <br/>
-<?php echo htmlspecialchars($comment['description']); ?></</p>
+<p><?php echo htmlspecialchars($comments['author']);?> le <?php echo htmlspecialchars($comments['posted_date']);?>: <br/>
+<?php echo htmlspecialchars($comments['description']); ?></</p>
 
 <?php
 } // Fin de la boucle des commentaires
 $retrieveComment->closeCursor();
 ?>
+
+<div>
+  <h2>Poster un commentaire</h3>
+<p>
+  <form action="comments_post.php" method="post">
+    <label for="author">Pseudo:</label>
+    <input type="text" id="author" name="author" >
+    <label for="description">Commentaire:</label>
+    <input type="text" name="description" id="description" />
+    <button type="submit">Ajouter</button>
+  </form>
+</p>
+
+</div>
 
 </body>
 </html>
