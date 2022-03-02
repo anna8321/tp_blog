@@ -11,28 +11,50 @@
   var_dump($vho['title']);
   echo '<hr/>';
   echo '<br/>';
-?>
+  ?>
 
+<h2>Commentaires</h2>
 
-  <h2>Commentaires</h2>
+<form action="index.php?action=addComment&amp;id=<?= $ticket['id'] ?>" method="post">
+    <div>
+        <label for="author">Auteur</label><br />
+        <input type="text" id="author" name="author" />
+    </div>
+    <div>
+        <label for="description">Commentaire</label><br />
+        <textarea id="description" name="description"></textarea>
+    </div>
+    <div>
+        <input type="submit" />
+    </div>
+</form>
+
 
   <?php
-    // while ($comment = $comments->fetchAll())
-    // {
+    while ($comment = $comments->fetch())
+    {
   ?>
       <p>
         <strong>
-          <!-- <?= htmlspecialchars($comment['author']) ?>  -->
+          <?= htmlspecialchars($comment['author']) ?>
         </strong>
         le
-        <!-- <?= $comment['comment_date_fr'] ?> -->
+         <?= $comment['posted_date'] ?>
       </p>
       <p>
-        <!-- <?= nl2br(htmlspecialchars($comment['description'])) ?> -->
+         <?= nl2br(htmlspecialchars($comment['description'])) ?>
       </p>
   <?php
-    // }
+    }
   ?>
+
+
+
+
+
+
+
+
 
 <?php $content = ob_get_clean(); ?>
 
